@@ -1,7 +1,8 @@
 //require("module-alias/register");
 import ZipHandler from "./helpers/ziphandler";
+import { getAttributeByPath } from "./helpers/attributesHandler";
 import PowerpointElementParser from "./parsers/elementparser";
-
+import GraphicFrameParser from "./parsers/graphicFrameParser";
 import { PowerpointDetails } from "airppt-models/pptdetails";
 import * as format from "string-template";
 
@@ -11,13 +12,13 @@ export class AirParser {
 	public async ParsePowerPoint(slideNumber: number): Promise<PowerpointDetails> {
 		//open Powerpoint File
 		await ZipHandler.loadZip(this.PowerpointFilePath);
-		let slideShowGlobals = await ZipHandler.parseSlideAttributes("ppt/presentation.xml");
-		let pptElementParser = new PowerpointElementParser();
+		const slideShowGlobals = await ZipHandler.parseSlideAttributes("ppt/presentation.xml");
+		const pptElementParser = new PowerpointElementParser();
 
 		//only get slideAttributes for one slide and return as array
-		let parsedSlideElements = await this.getSlideElements(pptElementParser, slideNumber);
+		const parsedSlideElements = await this.getSlideElements(pptElementParser, slideNumber);
 
-		let pptDetails: PowerpointDetails = {
+		const pptDetails: PowerpointDetails = {
 			slideShowGlobals,
 			powerPointElements: parsedSlideElements,
 			inputPath: this.PowerpointFilePath
@@ -31,18 +32,23 @@ export class AirParser {
 
 	private async getSlideElements(PPTElementParser: PowerpointElementParser, slideNumber) {
 		//Get all of Slide Shapes and Elements
-		let slideAttributes = await ZipHandler.parseSlideAttributes(format("ppt/slides/slide{0}.xml", slideNumber));
+		const slideAttributes = await ZipHandler.parseSlideAttributes(format("ppt/slides/slide{0}.xml", slideNumber));
 		//Contains references to links,images and etc on a Slide
-		let slideRelations = await ZipHandler.parseSlideAttributes(format("ppt/slides/_rels/slide{0}.xml.rels", slideNumber));
+		const slideRelations = await ZipHandler.parseSlideAttributes(format("ppt/slides/_rels/slide{0}.xml.rels", slideNumber));
 
+		const slideData = slideAttributes["p:sld"]["p:cSld"];
+		// console.log('slide data: ', slideData);
 		//PROBLEM: Layering Order not Preserved, Shapes Render First, Need to fix
-		let slideShapes = slideAttributes["p:sld"]["p:cSld"][0]["p:spTree"][0]["p:sp"] || [];
-		let slideImages = slideAttributes["p:sld"]["p:cSld"][0]["p:spTree"][0]["p:pic"] || [];
+		const slideShapes = getAttributeByPath(slideData, ["p:spTree", "p:sp"]);
+		const slideImages = getAttributeByPath(slideData, ["p:spTree", "p:pic"]);
+		const grahpicFrames = getAttributeByPath(slideData, ["p:spTree", "p:graphicFrame"]);
+		let slideTables = GraphicFrameParser.processGraphicFrameNodes(grahpicFrames);
 
-		let allSlideElements = slideShapes.concat(slideImages);
-		let allParsedSlideElements = [];
-		for (let slideElement of allSlideElements) {
-			let pptElement = PPTElementParser.getProcessedElement(slideElement, slideRelations);
+		const allSlideElements = [...slideShapes, ...slideImages, ...slideTables];
+
+		const allParsedSlideElements = [];
+		for (const slideElement of allSlideElements) {
+			const pptElement = PPTElementParser.getProcessedElement(slideElement, slideRelations);
 
 			//throwout any undrenderable content
 			if (pptElement) {

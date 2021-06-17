@@ -8,6 +8,9 @@ import { PowerpointElement, BorderType } from "airppt-models/pptelement";
  */
 export default class LineParser {
 	public static extractLineElements(element): PowerpointElement["shape"]["border"] {
+		if(!element["p:spPr"]) {
+			return null;
+		}
 		let shapeProperties = element["p:spPr"][0];
 		if (!shapeProperties["a:ln"] || shapeProperties["a:ln"][0]["a:noFill"]) {
 			return null;

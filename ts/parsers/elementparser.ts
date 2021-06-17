@@ -20,27 +20,46 @@ class PowerpointElementParser {
 			this.element = rawElement;
 
 			let elementName: string = "";
+			let elementPosition;
+			let elementOffsetPosition;
 
-			//
 			if (this.element["p:nvSpPr"]) {
 				elementName =
 					this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["title"] ||
 					this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
-			} else {
+
+					//elements must have a position, or else ignore them. TO-DO: Allow Placeholder positions
+				if (!this.element["p:spPr"][0]["a:xfrm"]) {
+					return null;
+				}
+				elementPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:off"][0]["$"];
+				elementOffsetPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:ext"][0]["$"];
+			}
+			else if (this.element["p:nvPicPr"]) {
 				//if the element is an image, get basic info like this
 				elementName =
 					this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["title"] ||
 					this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
+
+				if (!this.element["p:spPr"][0]["a:xfrm"]) {
+					return null;
+				}
+				elementPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:off"][0]["$"];
+				elementOffsetPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:ext"][0]["$"];
+			}
+			else if(this.element["p:nvGraphicFramePr"]) {
+				elementName =
+					this.element["p:nvGraphicFramePr"][0]["p:cNvPr"][0]["$"]["title"] ||
+					this.element["p:nvGraphicFramePr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
+
+				if (!this.element["p:xfrm"]) {
+					return null;
+				}
+				elementPosition = this.element["p:xfrm"][0]["a:off"][0]["$"];
+				elementOffsetPosition = this.element["p:xfrm"][0]["a:ext"][0]["$"];
 			}
 
-			//elements must have a position, or else ignore them. TO-DO: Allow Placeholder positions
-			if (!this.element["p:spPr"][0]["a:xfrm"]) {
-				return null;
-			}
-
-			let elementPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:off"][0]["$"];
 			let elementPresetType = CheckValidObject(this.element, '["p:spPr"][0]["a:prstGeom"][0]["$"]["prst"]') || "none";
-			let elementOffsetPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:ext"][0]["$"];
 
 			let paragraphInfo = CheckValidObject(this.element, '["p:txBody"][0]["a:p"][0]');
 

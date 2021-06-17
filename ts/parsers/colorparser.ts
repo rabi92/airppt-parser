@@ -17,6 +17,9 @@ export default class ColorParser {
 	}
 	public static getShapeFill(element): PowerpointElement["shape"]["fill"] {
 		//spPR takes precdence
+		if(!element["p:spPr"]) {
+			return null;
+		}
 		let shapeProperties = element["p:spPr"][0];
 
 		let fillType: PowerpointElement["shape"]["fill"] = {
@@ -56,6 +59,9 @@ export default class ColorParser {
 
 	public static getOpacity(element): number {
 		//spPR takes precdence
+		if(!element["p:spPr"]) {
+			return null;
+		}
 		let shapeProperties = element["p:spPr"][0];
 		if (shapeProperties["a:solidFill"]) {
 			//determine if it is theme or solid fill
