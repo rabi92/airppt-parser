@@ -34,13 +34,33 @@ export default class GraphicFrameParser {
 
     const tableRows = rawRows.map((row) => {
       let cols = row["a:tc"] ? row["a:tc"] : [];
-      cols = cols.map((col) => {
-        //can a:t have more values ? more than one in the array
-        //return any other column info, eg width height
-        return {
-          text: getAttributeByPath([col], ["a:txBody", "a:p", "a:r", "a:t"])[0]
-        };
+      cols = cols.filter(col => {
+        //filtering the columns that are merge columns or rows. as we still get them in raw data
+        if ( col['$'] && (col['$']['vMerge'] || col['$']['hMerge'])) {
+            return false;
+        }
+        return true;
       });
+
+      cols = cols.map((col) => {
+        let meta = {};
+        if (col['$']) {
+            if ((col['$']['rowSpan'])) {
+                meta['rowSpan'] = col['$']['rowSpan'];
+            }
+            if ((col['$']['gridSpan'])) {
+                meta['colSpan'] = col['$']['gridSpan'];
+            }
+        }
+        //can a:t have more values ? more than one in the array
+        //return any other column info, eg width height?
+        const textContent = getAttributeByPath([col], ["a:txBody", "a:p", "a:r", "a:t"])[0];
+        return {
+            //raw data doesn't have a property of text if the cell is empty, therefore we return an empty string
+            text: textContent && textContent.length > 0 ? textContent: '',
+            meta
+        };
+    });
       return {
         cols: cols
       };
