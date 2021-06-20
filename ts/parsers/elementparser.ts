@@ -4,6 +4,7 @@ import ParagraphParser from "./paragraphparser";
 import SlideRelationsParser from "./relparser";
 
 import { PowerpointElement } from "airppt-models/pptelement";
+import GraphicFrameParser from "./graphicFrameParser";
 
 /**
  * Entry point for all Parsers
@@ -22,6 +23,7 @@ class PowerpointElementParser {
 			let elementName: string = "";
 			let elementPosition;
 			let elementOffsetPosition;
+			let table = null;
 
 			if (this.element["p:nvSpPr"]) {
 				elementName =
@@ -57,6 +59,8 @@ class PowerpointElementParser {
 				}
 				elementPosition = this.element["p:xfrm"][0]["a:off"][0]["$"];
 				elementOffsetPosition = this.element["p:xfrm"][0]["a:ext"][0]["$"];
+
+				table = GraphicFrameParser.extractTableElements(this.element);
 			}
 
 			let elementPresetType = CheckValidObject(this.element, '["p:spPr"][0]["a:prstGeom"][0]["$"]["prst"]') || "none";
@@ -75,6 +79,7 @@ class PowerpointElementParser {
 					cx: elementOffsetPosition.cx,
 					cy: elementOffsetPosition.cy
 				},
+				table: table && table.rows.length > 0 ? table : null,
 				paragraph: ParagraphParser.extractParagraphElements(paragraphInfo),
 				shape: ShapeParser.extractShapeElements(this.element),
 				links: SlideRelationsParser.resolveShapeHyperlinks(this.element),
