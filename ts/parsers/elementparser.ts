@@ -49,7 +49,9 @@ class PowerpointElementParser {
 				elementPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:off"][0]["$"];
 				elementOffsetPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:ext"][0]["$"];
 			}
-			else if(this.element["p:nvGraphicFramePr"]) {
+			//check only if its the table, in future can be changed it to overall graphic types e.g. diagrams, charts. 
+			//but for now only doing the tables.
+			else if(CheckValidObject(this.element, '["a:graphic"][0]["a:graphicData"][0]["a:tbl"]')) {
 				elementName =
 					this.element["p:nvGraphicFramePr"][0]["p:cNvPr"][0]["$"]["title"] ||
 					this.element["p:nvGraphicFramePr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
