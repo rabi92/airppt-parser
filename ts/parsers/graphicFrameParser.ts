@@ -35,7 +35,7 @@ export default class GraphicFrameParser {
     const tableRows = rawRows.map((row) => {
       let cols = row["a:tc"] ? row["a:tc"] : [];
       cols = cols.filter(col => {
-        //filtering the columns that are merge columns or rows. as we still get them in raw data
+        //filtering the columns that are merge columns or merge rows. as we still get them in raw data
         if ( col['$'] && (col['$']['vMerge'] || col['$']['hMerge'])) {
             return false;
         }

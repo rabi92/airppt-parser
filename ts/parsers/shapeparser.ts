@@ -1,4 +1,4 @@
-import { CheckValidObject as checkPath } from "../helpers/checkobj";
+import { CheckValidObject as checkPath, CheckValidObject } from "../helpers/checkobj";
 import ColorParser from "./colorparser";
 import LineParser from "./lineparser";
 
@@ -16,6 +16,9 @@ export default class ShapeParser {
 	public static determineSpecialityType(element): SpecialityType {
 		if (element["p:nvPicPr"]) {
 			return SpecialityType.Image;
+		}
+		if(CheckValidObject(element, '["a:graphic"][0]["a:graphicData"][0]["a:tbl"]')){
+			return SpecialityType.Table;
 		}
 
 		return SpecialityType.None;
