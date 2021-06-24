@@ -5,6 +5,7 @@ import { getAttributeByPath } from "../helpers/attributesHandler";
 export default class GraphicFrameParser {
   public static processGraphicFrameNodes = (graphicFrames) => {
     const result = [];
+
     for (const frame of graphicFrames) {
       const graphicTypeUri = getAttributeByPath([frame], ["a:graphic", "a:graphicData", "$", "uri"]);
 
