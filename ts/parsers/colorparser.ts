@@ -17,9 +17,10 @@ export default class ColorParser {
 	}
 	public static getShapeFill(element): PowerpointElement["shape"]["fill"] {
 		//spPR takes precdence
-		if(!element["p:spPr"]) {
+		if (!element["p:spPr"]) {
 			return null;
 		}
+
 		let shapeProperties = element["p:spPr"][0];
 
 		let fillType: PowerpointElement["shape"]["fill"] = {
@@ -59,9 +60,10 @@ export default class ColorParser {
 
 	public static getOpacity(element): number {
 		//spPR takes precdence
-		if(!element["p:spPr"]) {
+		if (!element["p:spPr"]) {
 			return null;
 		}
+
 		let shapeProperties = element["p:spPr"][0];
 		if (shapeProperties["a:solidFill"]) {
 			//determine if it is theme or solid fill
@@ -86,10 +88,13 @@ export default class ColorParser {
 		if ("a:solidFill" in textElement) {
 			return (
 				checkPath(textElement, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
-				this.getThemeColor(checkPath(textElement, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
+				//commenting this as text colors are not required in our case
+				// this.getThemeColor(checkPath(textElement, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
 				"000000"
 			);
 		}
+
+		return "000000";
 	}
 
 	public static getThemeColor(themeClr) {
