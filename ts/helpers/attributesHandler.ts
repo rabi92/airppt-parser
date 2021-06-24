@@ -1,6 +1,6 @@
 export const getAttributeByPath = (slideAttributes, pathArray: string[]) => {
-
   if (pathArray.length === 0) {
+    //TODO: catch this error
     throw Error("Invalid path");
   }
 
