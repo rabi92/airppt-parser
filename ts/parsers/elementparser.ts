@@ -21,7 +21,7 @@ class PowerpointElementParser {
 			}
 			this.element = rawElement;
 
-			let elementName: string = "";
+			let elementName = "";
 			let elementPosition;
 			let elementOffsetPosition;
 			let table = null;
@@ -66,9 +66,9 @@ class PowerpointElementParser {
 				table = GraphicFrameParser.extractTableElements(this.element);
 			}
 
-			let elementPresetType = CheckValidObject(this.element, '["p:spPr"][0]["a:prstGeom"][0]["$"]["prst"]') || "none";
+			const elementPresetType = CheckValidObject(this.element, '["p:spPr"][0]["a:prstGeom"][0]["$"]["prst"]') || "none";
 
-			let paragraphInfo = CheckValidObject(this.element, '["p:txBody"][0]["a:p"][0]');
+			const paragraphInfo = CheckValidObject(this.element, '["p:txBody"][0]["a:p"][0]');
 
 			let pptElement: PowerpointElement = {
 				name: elementName,

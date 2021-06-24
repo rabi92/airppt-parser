@@ -1,4 +1,4 @@
-import { CheckValidObject as checkPath, CheckValidObject } from "../helpers/checkobj";
+import { CheckValidObject } from "../helpers/checkobj";
 import ColorParser from "./colorparser";
 import LineParser from "./lineparser";
 

@@ -37,12 +37,12 @@ export class AirParser {
 		const slideRelations = await ZipHandler.parseSlideAttributes(format("ppt/slides/_rels/slide{0}.xml.rels", slideNumber));
 
 		const slideData = slideAttributes["p:sld"]["p:cSld"];
-		// console.log('slide data: ', slideData);
+
 		//PROBLEM: Layering Order not Preserved, Shapes Render First, Need to fix
 		const slideShapes = getAttributeByPath(slideData, ["p:spTree", "p:sp"]);
 		const slideImages = getAttributeByPath(slideData, ["p:spTree", "p:pic"]);
-		const grahpicFrames = getAttributeByPath(slideData, ["p:spTree", "p:graphicFrame"]);
-		let slideTables = GraphicFrameParser.processGraphicFrameNodes(grahpicFrames);
+		const graphicFrames = getAttributeByPath(slideData, ["p:spTree", "p:graphicFrame"]);
+		const slideTables = GraphicFrameParser.processGraphicFrameNodes(graphicFrames);
 
 		const allSlideElements = [...slideShapes, ...slideImages, ...slideTables];
 
