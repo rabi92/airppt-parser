@@ -9,8 +9,7 @@ const format = require("string-template");
 function CheckValidObject(obj, path) {
     try {
         return eval(format("obj{0}", path));
-    }
-    catch (e) {
+    } catch (e) {
         return undefined;
     }
 }

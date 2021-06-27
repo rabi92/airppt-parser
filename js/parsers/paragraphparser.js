@@ -66,7 +66,7 @@ class ParagraphParser {
         if (!attributesList) {
             return null;
         }
-        Object.keys(attributesList).forEach(element => {
+        Object.keys(attributesList).forEach((element) => {
             if (element == "b" && attributesList[element] == 1) {
                 attributesArray.push(pptelement_1.FontAttributes.Bold);
             }

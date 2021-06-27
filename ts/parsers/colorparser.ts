@@ -1,116 +1,116 @@
 import { CheckValidObject as checkPath, CheckValidObject } from "../helpers/checkobj";
 import RelationParser from "./relparser";
-
 import { PowerpointElement, FillType } from "airppt-models/pptelement";
-
+import * as isEmpty from "lodash.isempty";
 /**
  * Parse the color of elements
  */
 export default class ColorParser {
-	static slideShowTheme;
-	/**
-	 *
-	 * @param theme Parsed XML with theme colors
-	 */
-	public static setSlideShowTheme(theme) {
-		this.slideShowTheme = theme;
-	}
-	public static getShapeFill(element): PowerpointElement["shape"]["fill"] {
-		//spPR takes precdence
-		if (!element["p:spPr"]) {
-			return null;
-		}
+    static slideShowTheme;
+    /**
+     *
+     * @param theme Parsed XML with theme colors
+     */
+    public static setSlideShowTheme(theme) {
+        this.slideShowTheme = theme;
+    }
+    public static getShapeFill(element): PowerpointElement["shape"]["fill"] {
+        //spPR takes precdence
 
-		let shapeProperties = element["p:spPr"][0];
+        if (isEmpty(element["p:spPr"])) {
+            return null;
+        }
 
-		let fillType: PowerpointElement["shape"]["fill"] = {
-			fillType: FillType.Solid,
-			fillColor: "00FFFFF"
-		};
+        const shapeProperties = element["p:spPr"][0];
 
-		//spPR[NOFILL] return null
-		if (shapeProperties["a:noFill"]) {
-			return fillType;
-		}
+        const fillType: PowerpointElement["shape"]["fill"] = {
+            fillType: FillType.Solid,
+            fillColor: "00FFFFF"
+        };
 
-		//Shape fill is an image
-		if (shapeProperties["a:blipFill"]) {
-			let relId = shapeProperties["a:blipFill"][0]["a:blip"][0]["$"]["r:embed"];
-			fillType.fillType = FillType.Image;
-			fillType.fillColor = RelationParser.getRelationDetails(relId).Uri || "NONE";
-			return fillType;
-		}
+        //spPR[NOFILL] return null
+        if (shapeProperties["a:noFill"]) {
+            return fillType;
+        }
 
-		if (shapeProperties["a:solidFill"]) {
-			//determine if it is theme or solid fill
-			let solidColor =
-				checkPath(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
-				this.getThemeColor(checkPath(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
-				"FFFFFF";
+        //Shape fill is an image
+        if (shapeProperties["a:blipFill"]) {
+            const relId = shapeProperties["a:blipFill"][0]["a:blip"][0]["$"]["r:embed"];
+            fillType.fillType = FillType.Image;
+            fillType.fillColor = RelationParser.getRelationDetails(relId).Uri || "NONE";
+            return fillType;
+        }
 
-			fillType.fillColor = solidColor;
-			return fillType;
-		}
+        if (shapeProperties["a:solidFill"]) {
+            //determine if it is theme or solid fill
+            const solidColor =
+                checkPath(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
+                this.getThemeColor(checkPath(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
+                "FFFFFF";
 
-		//look at p:style for shape default theme values
-		let shapeStyle = checkPath(element, '["p:style"][0]');
-		fillType.fillColor = this.getThemeColor(checkPath(shapeStyle, '["a:fillRef"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) || "FFFFFF";
-		return fillType;
-	}
+            fillType.fillColor = solidColor;
+            return fillType;
+        }
 
-	public static getOpacity(element): number {
-		//spPR takes precdence
-		if (!element["p:spPr"]) {
-			return null;
-		}
+        //look at p:style for shape default theme values
+        const shapeStyle = checkPath(element, '["p:style"][0]');
+        fillType.fillColor = this.getThemeColor(checkPath(shapeStyle, '["a:fillRef"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) || "FFFFFF";
+        return fillType;
+    }
 
-		let shapeProperties = element["p:spPr"][0];
-		if (shapeProperties["a:solidFill"]) {
-			//determine if it is theme or solid fill
-			if (checkPath(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"]') != undefined) {
-				return shapeProperties["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"];
-			}
+    public static getOpacity(element): number {
+        //spPR takes precdence
+        if (isEmpty(element["p:spPr"])) {
+            return null;
+        }
 
-			if (checkPath(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"]') != undefined) {
-				return shapeProperties["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"];
-			}
-		}
+        const shapeProperties = element["p:spPr"][0];
+        if (shapeProperties["a:solidFill"]) {
+            //determine if it is theme or solid fill
+            if (checkPath(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"]') != undefined) {
+                return shapeProperties["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"];
+            }
 
-		//spPR[NOFILL] return null
-		if (shapeProperties["a:noFill"]) {
-			return 0;
-		}
+            if (checkPath(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"]') != undefined) {
+                return shapeProperties["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"];
+            }
+        }
 
-		return 1;
-	}
+        //spPR[NOFILL] return null
+        if (shapeProperties["a:noFill"]) {
+            return 0;
+        }
 
-	public static getTextColors(textElement): string {
-		if ("a:solidFill" in textElement) {
-			return (
-				checkPath(textElement, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
-				//commenting this as text colors are not required in our case
-				// this.getThemeColor(checkPath(textElement, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
-				"000000"
-			);
-		}
+        return 1;
+    }
 
-		return "000000";
-	}
+    public static getTextColors(textElement): string {
+        if ("a:solidFill" in textElement) {
+            return (
+                checkPath(textElement, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
+                //commenting this as text colors are not required in our case
+                // this.getThemeColor(checkPath(textElement, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
+                "000000"
+            );
+        }
 
-	public static getThemeColor(themeClr) {
-		if (!themeClr) {
-			return null;
-		}
+        return "000000";
+    }
 
-		console.log("looking up theme clr");
-		let colors = this.slideShowTheme["a:theme"]["a:themeElements"][0]["a:clrScheme"][0];
-		let targetTheme = "a:" + themeClr;
-		if (targetTheme in colors) {
-			return colors[targetTheme][0]["a:srgbClr"][0]["$"]["val"];
-		}
+    public static getThemeColor(themeClr) {
+        if (!themeClr) {
+            return null;
+        }
 
-		return null;
-	}
+        console.log("looking up theme clr");
+        const colors = this.slideShowTheme["a:theme"]["a:themeElements"][0]["a:clrScheme"][0];
+        const targetTheme = "a:" + themeClr;
+        if (targetTheme in colors) {
+            return colors[targetTheme][0]["a:srgbClr"][0]["$"]["val"];
+        }
 
-	public static determineShapeOpacity(element) {}
+        return null;
+    }
+
+    public static determineShapeOpacity(element) {}
 }

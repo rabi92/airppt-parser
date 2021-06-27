@@ -2,8 +2,7 @@
 //Graphic frame node includes tables, charts and diagrams
 Object.defineProperty(exports, "__esModule", { value: true });
 const attributesHandler_1 = require("../helpers/attributesHandler");
-class GraphicFrameParser {
-}
+class GraphicFrameParser {}
 exports.default = GraphicFrameParser;
 GraphicFrameParser.processGraphicFrameNodes = (graphicFrames) => {
     const result = [];
@@ -46,7 +45,7 @@ GraphicFrameParser.extractTableElements = (frame) => {
             }
             //TODO: check if the text can have multiple values in an array, by default have seen only one so far
             // hence getting 0th index
-            const textContent = attributesHandler_1.getAttributeByPath([col], ["a:txBody", "a:p", "a:r", "a:t"])[0] || '';
+            const textContent = attributesHandler_1.getAttributeByPath([col], ["a:txBody", "a:p", "a:r", "a:t"])[0] || "";
             return {
                 //raw data doesn't have a property of text if the cell is empty, therefore we return an empty string
                 text: typeof textContent === "string" ? textContent : "",
