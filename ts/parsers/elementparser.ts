@@ -5,6 +5,8 @@ import SlideRelationsParser from "./relparser";
 import { PowerpointElement } from "airppt-models/pptelement";
 import GraphicFrameParser from "./graphicFrameParser";
 import { cleanupJson } from "../utils/common";
+import * as isEmpty from "lodash.isempty";
+
 
 /**
  * Entry point for all Parsers
@@ -80,7 +82,7 @@ class PowerpointElementParser {
                     cx: elementOffsetPosition.cx,
                     cy: elementOffsetPosition.cy
                 },
-                table: table && table.rows.length > 0 ? table : null,
+                table: !isEmpty(table) && !isEmpty(table.rows) ? table : null,
                 paragraph: ParagraphParser.extractParagraphElements(paragraphInfo),
                 shape: ShapeParser.extractShapeElements(this.element),
                 links: SlideRelationsParser.resolveShapeHyperlinks(this.element),

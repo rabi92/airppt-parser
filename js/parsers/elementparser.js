@@ -6,6 +6,7 @@ const paragraphparser_1 = require("./paragraphparser");
 const relparser_1 = require("./relparser");
 const graphicFrameParser_1 = require("./graphicFrameParser");
 const common_1 = require("../utils/common");
+const isEmpty = require("lodash.isempty");
 /**
  * Entry point for all Parsers
  */
@@ -70,7 +71,7 @@ class PowerpointElementParser {
                     cx: elementOffsetPosition.cx,
                     cy: elementOffsetPosition.cy
                 },
-                table: table && table.rows.length > 0 ? table : null,
+                table: !isEmpty(table) && !isEmpty(table.rows) ? table : null,
                 paragraph: paragraphparser_1.default.extractParagraphElements(paragraphInfo),
                 shape: shapeparser_1.default.extractShapeElements(this.element),
                 links: relparser_1.default.resolveShapeHyperlinks(this.element),
