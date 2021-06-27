@@ -2,7 +2,8 @@
 //Graphic frame node includes tables, charts and diagrams
 Object.defineProperty(exports, "__esModule", { value: true });
 const attributesHandler_1 = require("../helpers/attributesHandler");
-class GraphicFrameParser {}
+class GraphicFrameParser {
+}
 exports.default = GraphicFrameParser;
 GraphicFrameParser.processGraphicFrameNodes = (graphicFrames) => {
     const result = [];

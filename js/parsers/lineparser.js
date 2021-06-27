@@ -52,13 +52,9 @@ class LineParser {
         if (lineProperties["a:noFill"]) {
             return null;
         }
-        return (
-            checkobj_1.CheckValidObject(lineProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
-            colorparser_1.default.getThemeColor(
-                checkobj_1.CheckValidObject(lineProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')
-            ) ||
-            "000000"
-        );
+        return (checkobj_1.CheckValidObject(lineProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
+            colorparser_1.default.getThemeColor(checkobj_1.CheckValidObject(lineProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
+            "000000");
     }
 }
 exports.default = LineParser;

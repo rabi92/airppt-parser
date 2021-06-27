@@ -24,18 +24,19 @@ class PowerpointElementParser {
             if (this.element["p:nvSpPr"]) {
                 elementName =
                     this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["title"] ||
-                    this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
+                        this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
                 //elements must have a position, or else ignore them. TO-DO: Allow Placeholder positions
                 if (!this.element["p:spPr"][0]["a:xfrm"]) {
                     return null;
                 }
                 elementPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:off"][0]["$"];
                 elementOffsetPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:ext"][0]["$"];
-            } else if (this.element["p:nvPicPr"]) {
+            }
+            else if (this.element["p:nvPicPr"]) {
                 //if the element is an image, get basic info like this
                 elementName =
                     this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["title"] ||
-                    this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
+                        this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
                 if (!this.element["p:spPr"][0]["a:xfrm"]) {
                     return null;
                 }
@@ -47,7 +48,7 @@ class PowerpointElementParser {
             else if (checkobj_1.CheckValidObject(this.element, '["a:graphic"][0]["a:graphicData"][0]["a:tbl"]')) {
                 elementName =
                     this.element["p:nvGraphicFramePr"][0]["p:cNvPr"][0]["$"]["title"] ||
-                    this.element["p:nvGraphicFramePr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
+                        this.element["p:nvGraphicFramePr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
                 if (!this.element["p:xfrm"]) {
                     return null;
                 }
@@ -78,7 +79,8 @@ class PowerpointElementParser {
             //TODO: remove the raw property from final JSON
             pptElement = common_1.cleanupJson(pptElement);
             return pptElement;
-        } catch (e) {
+        }
+        catch (e) {
             console.warn("ERR could not parse element:", e);
             return null; //skip the element
         }

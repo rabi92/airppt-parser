@@ -38,8 +38,7 @@ class ColorParser {
         }
         if (shapeProperties["a:solidFill"]) {
             //determine if it is theme or solid fill
-            const solidColor =
-                checkobj_1.CheckValidObject(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
+            const solidColor = checkobj_1.CheckValidObject(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
                 this.getThemeColor(checkobj_1.CheckValidObject(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
                 "FFFFFF";
             fillType.fillColor = solidColor;
@@ -47,8 +46,7 @@ class ColorParser {
         }
         //look at p:style for shape default theme values
         const shapeStyle = checkobj_1.CheckValidObject(element, '["p:style"][0]');
-        fillType.fillColor =
-            this.getThemeColor(checkobj_1.CheckValidObject(shapeStyle, '["a:fillRef"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) || "FFFFFF";
+        fillType.fillColor = this.getThemeColor(checkobj_1.CheckValidObject(shapeStyle, '["a:fillRef"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) || "FFFFFF";
         return fillType;
     }
     static getOpacity(element) {
@@ -59,16 +57,10 @@ class ColorParser {
         const shapeProperties = element["p:spPr"][0];
         if (shapeProperties["a:solidFill"]) {
             //determine if it is theme or solid fill
-            if (
-                checkobj_1.CheckValidObject(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"]') !=
-                undefined
-            ) {
+            if (checkobj_1.CheckValidObject(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"]') != undefined) {
                 return shapeProperties["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"];
             }
-            if (
-                checkobj_1.CheckValidObject(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"]') !=
-                undefined
-            ) {
+            if (checkobj_1.CheckValidObject(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"]') != undefined) {
                 return shapeProperties["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"];
             }
         }
@@ -80,12 +72,10 @@ class ColorParser {
     }
     static getTextColors(textElement) {
         if ("a:solidFill" in textElement) {
-            return (
-                checkobj_1.CheckValidObject(textElement, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
+            return (checkobj_1.CheckValidObject(textElement, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
                 //commenting this as text colors are not required in our case
                 // this.getThemeColor(checkPath(textElement, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
-                "000000"
-            );
+                "000000");
         }
         return "000000";
     }
@@ -101,6 +91,6 @@ class ColorParser {
         }
         return null;
     }
-    static determineShapeOpacity(element) {}
+    static determineShapeOpacity(element) { }
 }
 exports.default = ColorParser;

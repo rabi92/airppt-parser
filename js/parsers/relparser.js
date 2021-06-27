@@ -30,7 +30,8 @@ class SlideRelationsParser {
                 let linkType = pptelement_1.LinkType.Asset;
                 if (relationDetails["TargetMode"] && relationDetails["TargetMode"] === "External") {
                     linkType = pptelement_1.LinkType.External;
-                } else {
+                }
+                else {
                     linkType = pptelement_1.LinkType.Asset;
                 }
                 let relElement = {
