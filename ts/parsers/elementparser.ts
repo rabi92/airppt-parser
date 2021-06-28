@@ -22,27 +22,36 @@ class PowerpointElementParser {
             }
             this.element = rawElement;
 
-            let elementName = "";
-            let elementPosition;
-            let elementOffsetPosition;
-            let table = null;
+			let elementName = "";
+			let elementPosition;
+			let elementOffsetPosition;
+			let table = null;
+			let isTitle = false;
 
             if (this.element["p:nvSpPr"]) {
                 elementName =
                     this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["title"] ||
                     this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
 
-                //elements must have a position, or else ignore them. TO-DO: Allow Placeholder positions
-                if (!this.element["p:spPr"][0]["a:xfrm"]) {
-                    return null;
-                }
-                elementPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:off"][0]["$"];
-                elementOffsetPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:ext"][0]["$"];
-            } else if (this.element["p:nvPicPr"]) {
-                //if the element is an image, get basic info like this
-                elementName =
-                    this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["title"] ||
-                    this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
+				if(CheckValidObject(this.element, '["p:nvSpPr"][0]["p:nvPr"][0]["p:ph"][0]["$"]["type"]') === 'ctrTitle') {
+					isTitle = true;
+				}
+
+				//elements must have a position, or else ignore them. TO-DO: Allow Placeholder positions
+				if (!isTitle && !this.element["p:spPr"][0]["a:xfrm"]) {
+					return null;
+				}
+
+				if(!isTitle ) {
+					elementPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:off"][0]["$"];
+					elementOffsetPosition = this.element["p:spPr"][0]["a:xfrm"][0]["a:ext"][0]["$"];
+				}
+			}
+			else if (this.element["p:nvPicPr"]) {
+				//if the element is an image, get basic info like this
+				elementName =
+					this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["title"] ||
+					this.element["p:nvPicPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
 
                 if (!this.element["p:spPr"][0]["a:xfrm"]) {
                     return null;
@@ -70,24 +79,24 @@ class PowerpointElementParser {
 
             const paragraphInfo = CheckValidObject(this.element, '["p:txBody"][0]["a:p"][0]');
 
-            let pptElement: PowerpointElement = {
-                name: elementName,
-                shapeType: ShapeParser.determineShapeType(elementPresetType),
-                specialityType: ShapeParser.determineSpecialityType(this.element),
-                elementPosition: {
-                    x: elementPosition.x,
-                    y: elementPosition.y
-                },
-                elementOffsetPosition: {
-                    cx: elementOffsetPosition.cx,
-                    cy: elementOffsetPosition.cy
-                },
-                table: !isEmpty(table) && !isEmpty(table.rows) ? table : null,
-                paragraph: ParagraphParser.extractParagraphElements(paragraphInfo),
-                shape: ShapeParser.extractShapeElements(this.element),
-                links: SlideRelationsParser.resolveShapeHyperlinks(this.element),
-                raw: rawElement
-            };
+			let pptElement: PowerpointElement = {
+				name: elementName,
+				shapeType: ShapeParser.determineShapeType(elementPresetType),
+				specialityType: ShapeParser.determineSpecialityType(this.element),
+				elementPosition: {
+					x: elementPosition?.x,
+					y: elementPosition?.y
+				},
+				elementOffsetPosition: {
+					cx: elementOffsetPosition?.cx,
+					cy: elementOffsetPosition?.cy
+				},
+				table: table && table.rows.length > 0 ? table : null,
+				paragraph: ParagraphParser.extractParagraphElements(paragraphInfo),
+				shape: ShapeParser.extractShapeElements(this.element),
+				links: SlideRelationsParser.resolveShapeHyperlinks(this.element),
+				raw: rawElement
+			};
 
             //TODO: remove the raw property from final JSON
             pptElement = cleanupJson(pptElement);
