@@ -77,7 +77,7 @@ class PowerpointElementParser {
 
             const elementPresetType = CheckValidObject(this.element, '["p:spPr"][0]["a:prstGeom"][0]["$"]["prst"]') || "none";
 
-            const paragraphInfo = CheckValidObject(this.element, '["p:txBody"][0]["a:p"][0]');
+            const paragraphInfo = CheckValidObject(this.element, '["p:txBody"][0]["a:p"]');
 
 			let pptElement: PowerpointElement = {
 				name: elementName,
