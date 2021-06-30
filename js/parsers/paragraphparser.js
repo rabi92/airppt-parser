@@ -51,10 +51,10 @@ class ParagraphParser {
             if (element === "i" && attributesList[element] == 1) {
                 attributesArray.push(pptelement_1.FontAttributes.Italics);
             }
-            if (element === "u") {
+            if (element === "u" && attributesList[element] != "none") {
                 attributesArray.push(pptelement_1.FontAttributes.Underline);
             }
-            if (element === "strike") {
+            if (element === "strike" && attributesList[element] != "noStrike") {
                 attributesArray.push(pptelement_1.FontAttributes.StrikeThrough);
             }
         });
@@ -66,7 +66,7 @@ class ParagraphParser {
             return null;
         }
         let alignment = pptelement_1.TextAlignment.Left;
-        const alignProps = checkobj_1.CheckValidObject(paragraphProperties, '[a:pPr][0]["$"]["algn"]');
+        const alignProps = checkobj_1.CheckValidObject(paragraphProperties, '["a:pPr"][0]["$"]["algn"]');
         if (alignProps) {
             switch (alignProps) {
                 case "ctr":

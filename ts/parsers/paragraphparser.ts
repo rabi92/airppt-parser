@@ -57,10 +57,10 @@ export default class ParagraphParser {
             if (element === "i" && attributesList[element] == 1) {
                 attributesArray.push(FontAttributes.Italics);
             }
-            if (element === "u") {
+            if (element === "u" && attributesList[element] != "none") {
                 attributesArray.push(FontAttributes.Underline);
             }
-            if (element === "strike") {
+            if (element === "strike" && attributesList[element] != "noStrike") {
                 attributesArray.push(FontAttributes.StrikeThrough);
             }
         });
@@ -75,7 +75,7 @@ export default class ParagraphParser {
 
         let alignment: TextAlignment = TextAlignment.Left;
 
-        const alignProps = CheckValidObject(paragraphProperties, '[a:pPr][0]["$"]["algn"]');
+        const alignProps = CheckValidObject(paragraphProperties, '["a:pPr"][0]["$"]["algn"]');
 
         if (alignProps) {
             switch (alignProps) {
