@@ -89,7 +89,7 @@ class PowerpointElementParser {
                     cx: elementOffsetPosition?.cx,
                     cy: elementOffsetPosition?.cy
                 },
-                table: table && table.rows.length > 0 ? table : null,
+                table: !isEmpty(table) && !isEmpty(table.rows) ? table : null,
                 paragraph: ParagraphParser.extractParagraphElements(paragraphInfo),
                 shape: ShapeParser.extractShapeElements(this.element),
                 links: SlideRelationsParser.resolveShapeHyperlinks(this.element),

@@ -6,6 +6,7 @@ const paragraphparser_1 = require("./paragraphparser");
 const relparser_1 = require("./relparser");
 const graphicFrameParser_1 = require("./graphicFrameParser");
 const common_1 = require("../utils/common");
+const isEmpty = require("lodash.isempty");
 /**
  * Entry point for all Parsers
  */
@@ -26,7 +27,7 @@ class PowerpointElementParser {
                 elementName =
                     this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["title"] ||
                         this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
-                if (checkobj_1.CheckValidObject(this.element, '["p:nvSpPr"][0]["p:nvPr"][0]["p:ph"][0]["$"]["type"]') === 'ctrTitle') {
+                if (checkobj_1.CheckValidObject(this.element, '["p:nvSpPr"][0]["p:nvPr"][0]["p:ph"][0]["$"]["type"]') === "ctrTitle") {
                     isTitle = true;
                 }
                 //elements must have a position, or else ignore them. TO-DO: Allow Placeholder positions
@@ -76,7 +77,7 @@ class PowerpointElementParser {
                     cx: elementOffsetPosition === null || elementOffsetPosition === void 0 ? void 0 : elementOffsetPosition.cx,
                     cy: elementOffsetPosition === null || elementOffsetPosition === void 0 ? void 0 : elementOffsetPosition.cy
                 },
-                table: table && table.rows.length > 0 ? table : null,
+                table: !isEmpty(table) && !isEmpty(table.rows) ? table : null,
                 paragraph: paragraphparser_1.default.extractParagraphElements(paragraphInfo),
                 shape: shapeparser_1.default.extractShapeElements(this.element),
                 links: relparser_1.default.resolveShapeHyperlinks(this.element),
