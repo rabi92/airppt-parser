@@ -54,7 +54,7 @@ class ParagraphParser {
             if (element === "u") {
                 attributesArray.push(pptelement_1.FontAttributes.Underline);
             }
-            if (element === "s" && attributesList[element] == 1) {
+            if (element === "strike") {
                 attributesArray.push(pptelement_1.FontAttributes.StrikeThrough);
             }
         });

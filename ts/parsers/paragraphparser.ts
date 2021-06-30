@@ -60,7 +60,7 @@ export default class ParagraphParser {
             if (element === "u") {
                 attributesArray.push(FontAttributes.Underline);
             }
-            if (element === "s" && attributesList[element] == 1) {
+            if (element === "strike") {
                 attributesArray.push(FontAttributes.StrikeThrough);
             }
         });
