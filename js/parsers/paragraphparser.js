@@ -40,21 +40,21 @@ class ParagraphParser {
     }
     /** Parse for italics, bold, underline & strike through*/
     static determineFontAttributes(attributesList) {
-        let attributesArray = [];
+        const attributesArray = [];
         if (!attributesList) {
             return null;
         }
         Object.keys(attributesList).forEach((element) => {
-            if (element === "b" && attributesList[element] == 1) {
+            if (element === pptelement_1.FontAttributes.Bold && attributesList[element] == 1) {
                 attributesArray.push(pptelement_1.FontAttributes.Bold);
             }
-            if (element === "i" && attributesList[element] == 1) {
+            if (element === pptelement_1.FontAttributes.Italics && attributesList[element] == 1) {
                 attributesArray.push(pptelement_1.FontAttributes.Italics);
             }
-            if (element === "u" && attributesList[element] != "none") {
+            if (element === pptelement_1.FontAttributes.Underline && attributesList[element] != "none") {
                 attributesArray.push(pptelement_1.FontAttributes.Underline);
             }
-            if (element === "strike" && attributesList[element] != "noStrike") {
+            if (element === pptelement_1.FontAttributes.StrikeThrough && attributesList[element] != "noStrike") {
                 attributesArray.push(pptelement_1.FontAttributes.StrikeThrough);
             }
         });

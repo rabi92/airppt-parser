@@ -46,21 +46,21 @@ export default class ParagraphParser {
 
     /** Parse for italics, bold, underline & strike through*/
     public static determineFontAttributes(attributesList): FontAttributes[] {
-        let attributesArray: FontAttributes[] = [];
+        const attributesArray: FontAttributes[] = [];
         if (!attributesList) {
             return null;
         }
         Object.keys(attributesList).forEach((element) => {
-            if (element === "b" && attributesList[element] == 1) {
+            if (element === FontAttributes.Bold && attributesList[element] == 1) {
                 attributesArray.push(FontAttributes.Bold);
             }
-            if (element === "i" && attributesList[element] == 1) {
+            if (element === FontAttributes.Italics && attributesList[element] == 1) {
                 attributesArray.push(FontAttributes.Italics);
             }
-            if (element === "u" && attributesList[element] != "none") {
+            if (element === FontAttributes.Underline && attributesList[element] != "none") {
                 attributesArray.push(FontAttributes.Underline);
             }
-            if (element === "strike" && attributesList[element] != "noStrike") {
+            if (element === FontAttributes.StrikeThrough && attributesList[element] != "noStrike") {
                 attributesArray.push(FontAttributes.StrikeThrough);
             }
         });
