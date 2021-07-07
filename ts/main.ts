@@ -13,7 +13,7 @@ export class AirParser {
             const slidesLength = await PptGlobalsParser.getSlidesLength(this.PowerpointFilePath);
             const allSlides = [];
 
-            for (let i = 1; i <= slidesLength + 1; i++) {
+            for (let i = 1; i <= slidesLength; i++) {
                 allSlides.push(SlideParser.getSlideElements(pptElementParser, i));
             }
 
