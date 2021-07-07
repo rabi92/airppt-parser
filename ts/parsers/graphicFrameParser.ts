@@ -1,6 +1,8 @@
 //Graphic frame node includes tables, charts and diagrams
 
 import { getAttributeByPath } from "../helpers/attributesHandler";
+import * as isEmpty from "lodash.isempty";
+import { TableDesign } from "airppt-models-plus/pptelement";
 
 export default class GraphicFrameParser {
     public static processGraphicFrameNodes = (graphicFrames) => {
@@ -23,6 +25,20 @@ export default class GraphicFrameParser {
 
         return result;
     };
+
+    static getTableDesigns = (table: any[]): string[] => {
+        const allDesigns = getAttributeByPath(table, ["a:tblPr", "$"]);
+        const tableDesigns = [];
+        if (!isEmpty(allDesigns)) {
+            for (const supportedDesign of Object.values(TableDesign)) {
+                if (allDesigns[supportedDesign]) {
+                    tableDesigns.push(supportedDesign);
+                }
+            }
+        }
+
+        return tableDesigns;
+    }
 
     public static extractTableElements = (frame) => {
         const rawTable = getAttributeByPath([frame], ["a:graphic", "a:graphicData", "a:tbl"]);
@@ -67,6 +83,7 @@ export default class GraphicFrameParser {
 
         //TODO: return any other possible and helpful table info
         return {
+            tableDesign: GraphicFrameParser.getTableDesigns(rawTable),
             rows: tableRows
         };
     };
