@@ -1,7 +1,7 @@
 import { CheckValidObject } from "../helpers/checkobj";
 import ColorParser from "./colorparser";
 
-import { 
+import {
     PowerpointElement,
     TextAlignment,
     FontAttributes,
