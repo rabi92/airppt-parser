@@ -1,4 +1,4 @@
-import { CheckValidObject as checkPath } from "../helpers/checkobj";
+import { checkPath } from "../helpers";
 import { PowerpointElement, LinkType } from "airppt-models-plus/pptelement";
 
 /**

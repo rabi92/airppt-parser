@@ -1,4 +1,4 @@
-import { CheckValidObject as checkPath } from "../helpers/checkobj";
+import { checkPath } from "../helpers";
 import { ColorParser, LineParser } from "./";
 import { PowerpointElement, SpecialityType } from "airppt-models-plus/pptelement";
 

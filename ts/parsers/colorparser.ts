@@ -1,5 +1,5 @@
-import { CheckValidObject as checkPath } from "../helpers/checkobj";
-import RelationParser from "./relparser";
+import { checkPath } from "../helpers";
+import { SlideRelationsParser } from "./";
 import { PowerpointElement, FillType } from "airppt-models-plus/pptelement";
 import * as isEmpty from "lodash.isempty";
 /**
@@ -37,7 +37,7 @@ export default class ColorParser {
         if (shapeProperties["a:blipFill"]) {
             const relId = shapeProperties["a:blipFill"][0]["a:blip"][0]["$"]["r:embed"];
             fillType.fillType = FillType.Image;
-            fillType.fillColor = RelationParser.getRelationDetails(relId).Uri || "NONE";
+            fillType.fillColor = SlideRelationsParser.getRelationDetails(relId).Uri || "NONE";
             return fillType;
         }
 

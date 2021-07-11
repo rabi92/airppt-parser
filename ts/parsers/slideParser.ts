@@ -1,6 +1,5 @@
 import * as format from "string-template";
-import ZipHandler from "../helpers/ziphandler";
-import { getAttributeByPath } from "../helpers/attributesHandler";
+import { getAttributeByPath, ZipHandler } from "../helpers";
 import { GraphicFrameParser, PowerpointElementParser } from "./";
 
 export default class SlideParser {
