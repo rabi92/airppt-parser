@@ -1,9 +1,11 @@
 import { CheckValidObject } from "../helpers/checkobj";
-import ShapeParser from "./shapeparser";
-import ParagraphParser from "./paragraphparser";
-import SlideRelationsParser from "./relparser";
 import { PowerpointElement } from "airppt-models-plus/pptelement";
-import GraphicFrameParser from "./graphicFrameParser";
+import {
+    GraphicFrameParser,
+    ShapeParser,
+    SlideRelationsParser,
+    ParagraphParser
+} from "./";
 import { cleanupJson } from "../utils/common";
 import * as isEmpty from "lodash.isempty";
 

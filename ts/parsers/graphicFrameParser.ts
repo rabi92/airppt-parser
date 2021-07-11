@@ -2,7 +2,7 @@
 
 import { getAttributeByPath } from "../helpers/attributesHandler";
 import * as isEmpty from "lodash.isempty";
-import { Paragraph, PowerpointElement, TableDesign } from "airppt-models-plus/pptelement";
+import { TableDesign } from "airppt-models-plus/pptelement";
 import { CheckValidObject } from "../helpers/checkobj";
 import ParagraphParser from "./paragraphparser";
 

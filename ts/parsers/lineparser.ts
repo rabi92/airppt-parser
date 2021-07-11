@@ -1,6 +1,4 @@
 import { CheckValidObject as checkPath } from "../helpers/checkobj";
-import ColorParser from "./colorparser";
-
 import { PowerpointElement, BorderType } from "airppt-models-plus/pptelement";
 
 /**
