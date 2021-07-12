@@ -1,4 +1,4 @@
-import { checkPath } from "../helpers";
+import { checkPath, getValueAtPath } from "../helpers";
 import { PowerpointElement } from "airppt-models-plus/pptelement";
 import {
     GraphicFrameParser,
@@ -34,7 +34,7 @@ class PowerpointElementParser {
                     this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["title"] ||
                     this.element["p:nvSpPr"][0]["p:cNvPr"][0]["$"]["name"].replace(/\s/g, "");
 
-                if (checkPath(this.element, '["p:nvSpPr"][0]["p:nvPr"][0]["p:ph"][0]["$"]["type"]') === "ctrTitle") {
+                if (getValueAtPath(this.element, '["p:nvSpPr"][0]["p:nvPr"][0]["p:ph"][0]["$"]["type"]') === "ctrTitle") {
                     isTitle = true;
                 }
 
@@ -75,9 +75,9 @@ class PowerpointElementParser {
                 table = GraphicFrameParser.extractTableElements(this.element);
             }
 
-            const elementPresetType = checkPath(this.element, '["p:spPr"][0]["a:prstGeom"][0]["$"]["prst"]') || "none";
+            const elementPresetType = getValueAtPath(this.element, '["p:spPr"][0]["a:prstGeom"][0]["$"]["prst"]') || "none";
 
-            const paragraphInfo = checkPath(this.element, '["p:txBody"][0]["a:p"]');
+            const paragraphInfo = getValueAtPath(this.element, '["p:txBody"][0]["a:p"]');
 
             let pptElement: PowerpointElement = {
                 name: elementName,

@@ -1,6 +1,6 @@
 //Graphic frame node includes tables, charts and diagrams
 
-import { getAttributeByPath, checkPath } from "../helpers";
+import { getAttributeByPath, getValueAtPath } from "../helpers";
 import * as isEmpty from "lodash.isempty";
 import { TableDesign } from "airppt-models-plus/pptelement";
 import { ParagraphParser } from "./";
@@ -68,7 +68,7 @@ export default class GraphicFrameParser {
                     }
                 }
 
-                const paragraphInfo = checkPath(col, '["a:txBody"][0]["a:p"]');
+                const paragraphInfo = getValueAtPath(col, '["a:txBody"][0]["a:p"]');
                 let parsedParagraph = ParagraphParser.extractParagraphElements(paragraphInfo);
                 //edge case to handle the empty cell, without this check it will be sent as { paragraph: { content: [], ....}}
                 //and that is considered as line break in our renderer

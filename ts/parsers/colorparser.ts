@@ -1,4 +1,4 @@
-import { checkPath } from "../helpers";
+import { checkPath, getValueAtPath } from "../helpers";
 import { SlideRelationsParser } from "./";
 import { PowerpointElement, FillType } from "airppt-models-plus/pptelement";
 import * as isEmpty from "lodash.isempty";
@@ -44,8 +44,8 @@ export default class ColorParser {
         if (shapeProperties["a:solidFill"]) {
             //determine if it is theme or solid fill
             const solidColor =
-                checkPath(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
-                // this.getThemeColor(checkPath(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
+                getValueAtPath(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
+                // this.getThemeColor(getValueAtPath(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
                 "FFFFFF";
 
             fillType.fillColor = solidColor;
@@ -53,8 +53,8 @@ export default class ColorParser {
         }
 
         //look at p:style for shape default theme values
-        // const shapeStyle = checkPath(element, '["p:style"][0]');
-        // fillType.fillColor = this.getThemeColor(checkPath(shapeStyle, '["a:fillRef"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) || "FFFFFF";
+        // const shapeStyle = getValueAtPath(element, '["p:style"][0]');
+        // fillType.fillColor = this.getThemeColor(getValueAtPath(shapeStyle, '["a:fillRef"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) || "FFFFFF";
         fillType.fillColor = "FFFFFF";
 
         return fillType;
@@ -69,11 +69,11 @@ export default class ColorParser {
         const shapeProperties = element["p:spPr"][0];
         if (shapeProperties["a:solidFill"]) {
             //determine if it is theme or solid fill
-            if (checkPath(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"]') != undefined) {
+            if (checkPath(shapeProperties, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"]')) {
                 return shapeProperties["a:solidFill"]["0"]["a:srgbClr"]["0"]["a:alpha"][0]["$"]["val"];
             }
 
-            if (checkPath(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"]') != undefined) {
+            if (checkPath(shapeProperties, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"]')) {
                 return shapeProperties["a:solidFill"]["0"]["a:schemeClr"]["0"]["a:alpha"][0]["$"]["val"];
             }
         }
@@ -89,7 +89,7 @@ export default class ColorParser {
     public static getTextColors(textElement): string {
         if ("a:solidFill" in textElement) {
             return (
-                checkPath(textElement, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
+                getValueAtPath(textElement, '["a:solidFill"]["0"]["a:srgbClr"]["0"]["$"]["val"]') ||
                 //commenting this as text colors are not required in our case
                 // this.getThemeColor(checkPath(textElement, '["a:solidFill"]["0"]["a:schemeClr"]["0"]["$"]["val"]')) ||
                 "000000"
