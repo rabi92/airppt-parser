@@ -14,9 +14,7 @@ export function getValueAtPath(obj: any, path: string): any {
 }
 
 export function checkPath(obj: any, path: string): boolean {
-    if (getValueAtPath(obj, path) === undefined) {
-        return false;
-    } else {
-        return true;
+    return getValueAtPath(obj, path) !== undefined;
+
     }
 }
