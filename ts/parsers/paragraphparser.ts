@@ -1,4 +1,4 @@
-import { getValueAtPath } from "../helpers";
+import { checkPath, getValueAtPath } from "../helpers";
 import { ColorParser } from "./";
 
 import {
@@ -6,32 +6,121 @@ import {
     TextAlignment,
     FontAttributes,
     Paragraph,
-    Content
+    Content,
+    List,
+    ListType
 } from "airppt-models-plus/pptelement";
 
 /**
  * Parse the paragraph elements
  */
 export default class ParagraphParser {
+    public static isList(paragraph): boolean {
+        return (
+            checkPath(paragraph, '["a:pPr"][0]["a:buAutoNum"]') ||
+            checkPath(paragraph, '["a:pPr"][0]["a:buChar"]')
+        );
+    }
+
+    public static getParagraph(paragraph): Paragraph {
+        const textElements = paragraph["a:r"] || [];
+        const content = textElements.map((txtElement) => {
+            return {
+                text: txtElement["a:t"] || "",
+                textCharacterProperties: this.determineTextProperties(
+                    getValueAtPath(txtElement, '["a:rPr"][0]')
+                )
+            };
+        });
+
+        return {
+            content: content,
+            paragraphProperties: this.determineParagraphProperties(paragraph)
+        };
+    }
+
+    public static getListlevel(paragraph): number {
+        const level = getValueAtPath(paragraph, '["a:pPr"][0]["$"]["lvl"]');
+
+        return level ? parseInt(level) : 0;
+    }
+
+    public static getListType(paragraph): ListType {
+        if (checkPath(paragraph, '["a:pPr"][0]["a:buAutoNum"]')) {
+            return ListType.Ordered;
+        } else { //getValueAtPath(paragraph, '["a:pPr"][0]["a:buChar"]')
+            return ListType.UnOrdered;
+        }
+    }
+
     public static extractParagraphElements(paragraphs: any[]): PowerpointElement["paragraph"] {
         if (!paragraphs || paragraphs.length === 0) {
             return null;
         }
 
-        return paragraphs.map((paragraph) => {
-            const textElements = paragraph["a:r"] || [];
-            const content = textElements.map((txtElement) => {
-                return {
-                    text: txtElement["a:t"] || "",
-                    textCharacterProperties: this.determineTextProperties(getValueAtPath(txtElement, '["a:rPr"][0]'))
-                };
-            });
+        const paras = [];
+        const stack = [];
+        const paragraph: Paragraph = {
+            list: {
+                listType: ListType.Ordered,
+                listItems: []
+            }
+        };
+        let currentParagraph = paragraph;
+        let currentLevel = -1;
 
-            return {
-                content: content,
-                paragraphProperties: this.determineParagraphProperties(paragraph)
-            };
-        });
+        for (const p of paragraphs) {
+            if (this.isList(p)) {
+                const listLevel = this.getListlevel(p);
+
+                //if its the first of the list kind
+                if (currentLevel === -1) {
+                    currentLevel = 0;
+                    currentParagraph.list.listType = this.getListType(p);
+                    currentParagraph.list.listItems.push(this.getParagraph(p));
+                    stack.push(currentParagraph);
+                }
+                //if the level is same keep pushing the list items in the same array
+                else if (listLevel === currentLevel) {
+                    currentParagraph.list.listItems.push(this.getParagraph(p));
+                } else if (listLevel > currentLevel) {
+                    //if there is another hierarchy starting create a new list for it
+                    const newPara: Paragraph = {
+                        list: {
+                            listType: this.getListType(p),
+                            listItems: [this.getParagraph(p)]
+                        }
+                    };
+                    currentParagraph.list.listItems.push(newPara);
+                    currentParagraph = newPara;
+                    //pushing it in the stack to keep track of the parents
+                    stack.push(newPara);
+                    currentLevel++;
+                } else { //if we find the list level lower than current level
+                    //keep going back in stack until the same level parent found
+                    while (currentLevel !== listLevel) {
+                        stack.pop();
+                        currentLevel--;
+                    }
+                    //and push the new item as a sibling
+                    currentParagraph = stack[stack.length - 1];
+                    currentParagraph.list.listItems.push(this.getParagraph(p));
+                }
+            } else { //if the paragraph was not a list item
+                //check if we previously had the list items then push the list in paragraphs
+                if(paragraph.list.listItems.length > 0) {
+                    paras.push(paragraph);
+                    paragraph.list.listItems = [];
+                }
+                paras.push(this.getParagraph(p));
+            }
+        }
+        //true if there were only list items in the text box, push them
+        if (paragraph.list.listItems.length > 0) {
+            paras.push(paragraph);
+        }
+
+        return paras;
     }
 
     /**a:rPr */
@@ -74,7 +163,9 @@ export default class ParagraphParser {
     }
 
     /**a:pPr */
-    public static determineParagraphProperties(paragraphProperties): Paragraph["paragraphProperties"] {
+    public static determineParagraphProperties(
+        paragraphProperties
+    ): Paragraph["paragraphProperties"] {
         if (!paragraphProperties) {
             return null;
         }
