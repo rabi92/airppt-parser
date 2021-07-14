@@ -94,6 +94,20 @@ export default class ParagraphParser {
                 else if (listLevel === currentLevel) {
                     currentParagraph.list.listItems.push(this.getParagraph(p));
                 } else if (listLevel > currentLevel) {
+                    //edge case to handle if multiple levels are jumped ahead
+                    while (currentLevel < listLevel - 1) {
+                        const emptyPara: Paragraph = {
+                            list: {
+                                listType: ListType.Ordered,
+                                listItems: []
+                            }
+                        };
+                        currentParagraph.list.listItems.push(emptyPara);
+                        currentParagraph = emptyPara;
+                        //pushing it in the stack to keep track of the parents
+                        stack.push(emptyPara);
+                        currentLevel++;
+                    }
                     //if there is another hierarchy starting create a new list for it
                     const newPara: Paragraph = {
                         list: {
@@ -106,7 +120,8 @@ export default class ParagraphParser {
                     //pushing it in the stack to keep track of the parents
                     stack.push(newPara);
                     currentLevel++;
-                } else { //if we find the list level lower than current level
+                } else {
+                    //if we find the list level lower than current level
                     //keep going back in stack until the same level parent found
                     while (currentLevel !== listLevel) {
                         stack.pop();
@@ -116,7 +131,8 @@ export default class ParagraphParser {
                     currentParagraph = stack[stack.length - 1];
                     currentParagraph.list.listItems.push(this.getParagraph(p));
                 }
-            } else { //if the paragraph was not a list item
+            } else {
+                //if the paragraph was not a list item
                 //check if we previously had the list items then push the list in paragraphs
                 if (paragraph.list.listItems.length > 0) {
                     paragraph.list = this.restructureList(paragraph.list);
