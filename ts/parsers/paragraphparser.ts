@@ -54,10 +54,10 @@ export default class ParagraphParser {
     }
 
     public static restructureList(list: List): List {
-        for(let i = 0; i<list.listItems.length -1; i++) {
-            if(list.listItems[i+1].list) {
-                list.listItems[i]["list"] = this.restructureList(list.listItems[i+1].list);
-                list.listItems.splice(i+1, 1);
+        for (let i = 0; i < list.listItems.length - 1; i++) {
+            if (list.listItems[i + 1].list) {
+                list.listItems[i]["list"] = this.restructureList(list.listItems[i + 1].list);
+                list.listItems.splice(i + 1, 1);
             }
         }
         return list;
@@ -118,7 +118,7 @@ export default class ParagraphParser {
                 }
             } else { //if the paragraph was not a list item
                 //check if we previously had the list items then push the list in paragraphs
-                if(paragraph.list.listItems.length > 0) {
+                if (paragraph.list.listItems.length > 0) {
                     paragraph.list = this.restructureList(paragraph.list);
                     paras.push(paragraph);
                     paragraph.list.listItems = [];
