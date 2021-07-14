@@ -95,10 +95,11 @@ export default class ParagraphParser {
                     currentParagraph.list.listItems.push(this.getParagraph(p));
                 } else if (listLevel > currentLevel) {
                     //edge case to handle if multiple levels are jumped ahead
+                    //create empty paragraphs/lists to maintain hierarchy and fill in the level gaps
                     while (currentLevel < listLevel - 1) {
                         const emptyPara: Paragraph = {
                             list: {
-                                listType: ListType.Ordered,
+                                listType: ListType.None,
                                 listItems: []
                             }
                         };
