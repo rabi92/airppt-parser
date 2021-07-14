@@ -48,9 +48,9 @@ export default class ParagraphParser {
     public static getListType(paragraph): ListType {
         if (checkPath(paragraph, '["a:pPr"][0]["a:buAutoNum"]')) {
             return ListType.Ordered;
-        } else { //getValueAtPath(paragraph, '["a:pPr"][0]["a:buChar"]')
-            return ListType.UnOrdered;
         }
+
+        return ListType.UnOrdered;
     }
 
     public static restructureList(list: List): List {
