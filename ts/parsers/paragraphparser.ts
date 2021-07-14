@@ -99,7 +99,7 @@ export default class ParagraphParser {
                     while (currentLevel < listLevel - 1) {
                         const emptyPara: Paragraph = {
                             list: {
-                                listType: ListType.None,
+                                listType: ListType.UnOrdered,
                                 listItems: []
                             }
                         };
