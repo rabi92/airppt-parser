@@ -148,8 +148,8 @@ export default class ParagraphParser {
                     currentLevel++;
                 } else {
                     //if we find the list level lower than current level
-                    //keep going back in stack until the same level parent found
-                    while (currentLevel !== listLevel) {
+                    //keep going back in stack until the same level parent is found
+                    while (currentLevel > listLevel) {
                         stack.pop();
                         currentLevel--;
                     }
