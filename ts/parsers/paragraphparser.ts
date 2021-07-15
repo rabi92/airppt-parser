@@ -80,7 +80,7 @@ export default class ParagraphParser {
             return null;
         }
 
-        const paras = [];
+        const allParagraphs = [];
         const stack = [];
         const paragraph: Paragraph = {
             list: {
@@ -91,60 +91,60 @@ export default class ParagraphParser {
         let currentParagraph = paragraph;
         let currentLevel = -1;
 
-        for (const p of paragraphs) {
-            if (this.isList(p)) {
-                const listLevel = this.getListlevel(p);
+        for (const paragraphItem of paragraphs) {
+            if (this.isList(paragraphItem)) {
+                const listLevel = this.getListlevel(paragraphItem);
 
                 // if its the first of the list kind
                 if (currentLevel === -1) {
                     while (currentLevel < listLevel - 1) {
-                        const emptyPara: Paragraph = {
+                        const emptyParagraph: Paragraph = {
                             list: {
                                 listType: ListType.UnOrdered,
                                 listItems: []
                             }
                         };
-                        currentParagraph.list.listItems.push(emptyPara);
-                        currentParagraph = emptyPara;
+                        currentParagraph.list.listItems.push(emptyParagraph);
+                        currentParagraph = emptyParagraph;
                         //pushing it in the stack to keep track of the parents
-                        stack.push(emptyPara);
+                        stack.push(emptyParagraph);
                         currentLevel++;
                     }
-                    currentParagraph.list.listType = this.getListType(p);
-                    currentParagraph.list.listItems.push(this.getParagraph(p));
+                    currentParagraph.list.listType = this.getListType(paragraphItem);
+                    currentParagraph.list.listItems.push(this.getParagraph(paragraphItem));
                     stack.push(currentParagraph);
                     currentLevel++;
                 }
                 //if the level is same keep pushing the list items in the same array
                 else if (listLevel === currentLevel) {
-                    currentParagraph.list.listItems.push(this.getParagraph(p));
+                    currentParagraph.list.listItems.push(this.getParagraph(paragraphItem));
                 } else if (listLevel > currentLevel) {
                     //edge case to handle if multiple levels are jumped ahead
                     //create empty paragraphs/lists to maintain hierarchy and fill in the level gaps
                     while (currentLevel < listLevel - 1) {
-                        const emptyPara: Paragraph = {
+                        const emptyParagraph: Paragraph = {
                             list: {
                                 listType: ListType.UnOrdered,
                                 listItems: []
                             }
                         };
-                        currentParagraph.list.listItems.push(emptyPara);
-                        currentParagraph = emptyPara;
+                        currentParagraph.list.listItems.push(emptyParagraph);
+                        currentParagraph = emptyParagraph;
                         //pushing it in the stack to keep track of the parents
-                        stack.push(emptyPara);
+                        stack.push(emptyParagraph);
                         currentLevel++;
                     }
                     //if there is another hierarchy starting create a new list for it
-                    const newPara: Paragraph = {
+                    const newParagraph: Paragraph = {
                         list: {
-                            listType: this.getListType(p),
-                            listItems: [this.getParagraph(p)]
+                            listType: this.getListType(paragraphItem),
+                            listItems: [this.getParagraph(paragraphItem)]
                         }
                     };
-                    currentParagraph.list.listItems.push(newPara);
-                    currentParagraph = newPara;
+                    currentParagraph.list.listItems.push(newParagraph);
+                    currentParagraph = newParagraph;
                     //pushing it in the stack to keep track of the parents
-                    stack.push(newPara);
+                    stack.push(newParagraph);
                     currentLevel++;
                 } else {
                     //if we find the list level lower than current level
@@ -155,26 +155,26 @@ export default class ParagraphParser {
                     }
                     //and push the new item as a sibling
                     currentParagraph = stack[stack.length - 1];
-                    currentParagraph.list.listItems.push(this.getParagraph(p));
+                    currentParagraph.list.listItems.push(this.getParagraph(paragraphItem));
                 }
             } else {
                 //if the paragraph was not a list item
                 //check if we previously had the list items then push the list in paragraphs
                 if (paragraph.list.listItems.length > 0) {
                     paragraph.list = this.restructureList(paragraph.list);
-                    paras.push(paragraph);
+                    allParagraphs.push(paragraph);
                     paragraph.list.listItems = [];
                 }
-                paras.push(this.getParagraph(p));
+                allParagraphs.push(this.getParagraph(paragraphItem));
             }
         }
         //true if there were only list items in the text box, push them
         if (paragraph.list.listItems.length > 0) {
             paragraph.list = this.restructureList(paragraph.list);
-            paras.push(paragraph);
+            allParagraphs.push(paragraph);
         }
 
-        return paras;
+        return allParagraphs;
     }
 
     /**a:rPr */
