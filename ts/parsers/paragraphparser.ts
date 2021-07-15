@@ -53,11 +53,23 @@ export default class ParagraphParser {
         return ListType.UnOrdered;
     }
 
+    //recursively iterate the list and restructure it to have a parent child relation
     public static restructureList(list: List): List {
+        //if we keep finding the empty list at top level keep going deeper.
+        //Note: before restructuring, list items and paragraph content didn't exist in the same object
+        if (list.listItems[0].list) {
+            this.restructureList(list.listItems[0].list);
+        }
         for (let i = 0; i < list.listItems.length - 1; i++) {
+            //if any of the element is list, keep going going deeper into the list
+            if (list.listItems[i].list) {
+                this.restructureList(list.listItems[i].list);
+            }
+            //if the next item to the content is a list, make that list child of the content
             if (list.listItems[i + 1].list) {
-                list.listItems[i]["list"] = this.restructureList(list.listItems[i + 1].list);
+                list.listItems[i]["list"] = list.listItems[i + 1].list;
                 list.listItems.splice(i + 1, 1);
+                i--;
             }
         }
         return list;
