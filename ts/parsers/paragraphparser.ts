@@ -83,12 +83,25 @@ export default class ParagraphParser {
             if (this.isList(p)) {
                 const listLevel = this.getListlevel(p);
 
-                //if its the first of the list kind
+                // if its the first of the list kind
                 if (currentLevel === -1) {
-                    currentLevel = 0;
+                    while (currentLevel < listLevel - 1) {
+                        const emptyPara: Paragraph = {
+                            list: {
+                                listType: ListType.UnOrdered,
+                                listItems: []
+                            }
+                        };
+                        currentParagraph.list.listItems.push(emptyPara);
+                        currentParagraph = emptyPara;
+                        //pushing it in the stack to keep track of the parents
+                        stack.push(emptyPara);
+                        currentLevel++;
+                    }
                     currentParagraph.list.listType = this.getListType(p);
                     currentParagraph.list.listItems.push(this.getParagraph(p));
                     stack.push(currentParagraph);
+                    currentLevel++;
                 }
                 //if the level is same keep pushing the list items in the same array
                 else if (listLevel === currentLevel) {
