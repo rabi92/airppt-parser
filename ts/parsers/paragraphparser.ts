@@ -57,7 +57,7 @@ export default class ParagraphParser {
     public static restructureList(list: List): List {
         //if we keep finding the empty list at top level keep going deeper.
         //Note: before restructuring, list items and paragraph content didn't exist in the same object
-        if (list.listItems[0].list) {
+        if (list.listItems.length === 1 && list.listItems[0].list) {
             this.restructureList(list.listItems[0].list);
         }
         for (let i = 0; i < list.listItems.length - 1; i++) {
