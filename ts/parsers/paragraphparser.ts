@@ -1,5 +1,5 @@
 import { getValueAtPath } from "../helpers";
-import { ColorParser } from "./";
+import { ColorParser, SlideRelationsParser } from "./";
 
 import {
     PowerpointElement,
@@ -13,25 +13,37 @@ import {
  * Parse the paragraph elements
  */
 export default class ParagraphParser {
+
+    public static getParagraph(paragraph): Paragraph {
+        const textElements = paragraph["a:r"] || [];
+        const contents = textElements.map((txtElement) => {
+            const content: Content = {
+                text: txtElement["a:t"] || "",
+                textCharacterProperties: this.determineTextProperties(
+                    getValueAtPath(txtElement, '["a:rPr"][0]')
+                )
+            };
+
+           const hyperlink = SlideRelationsParser.resolveParagraphHyperlink(txtElement);
+           if(hyperlink) {
+              content.hyperlink = hyperlink;
+           }
+
+            return content;
+        });
+
+        return {
+            content: contents,
+            paragraphProperties: this.determineParagraphProperties(paragraph)
+        };
+    }
+
     public static extractParagraphElements(paragraphs: any[]): PowerpointElement["paragraph"] {
         if (!paragraphs || paragraphs.length === 0) {
             return null;
         }
 
-        return paragraphs.map((paragraph) => {
-            const textElements = paragraph["a:r"] || [];
-            const content = textElements.map((txtElement) => {
-                return {
-                    text: txtElement["a:t"] || "",
-                    textCharacterProperties: this.determineTextProperties(getValueAtPath(txtElement, '["a:rPr"][0]'))
-                };
-            });
-
-            return {
-                content: content,
-                paragraphProperties: this.determineParagraphProperties(paragraph)
-            };
-        });
+        return paragraphs.map((paragraph) => this.getParagraph(paragraph));
     }
 
     /**a:rPr */
