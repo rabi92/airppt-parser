@@ -13,10 +13,26 @@ import {
  * Parse the paragraph elements
  */
 export default class ParagraphParser {
+    //Merge consecutive text content blocks together which have same hyperlinks
+    public static restructureContents(contents: Content[]): Content[] {
+        for (let i = 0; i < contents.length - 1; i++) {
+            if (
+                contents[i].hyperlink &&
+                contents[i + 1].hyperlink &&
+                contents[i].hyperlink.Uri === contents[i + 1].hyperlink.Uri
+            ) {
+                contents[i].text += " " + contents[i + 1].text;
+                contents.splice(i + 1, 1);
+                i--;
+            }
+        }
+
+        return contents;
+    }
 
     public static getParagraph(paragraph): Paragraph {
         const textElements = paragraph["a:r"] || [];
-        const contents = textElements.map((txtElement) => {
+        let contents = textElements.map((txtElement) => {
             const content: Content = {
                 text: txtElement["a:t"] || "",
                 textCharacterProperties: this.determineTextProperties(
@@ -24,13 +40,15 @@ export default class ParagraphParser {
                 )
             };
 
-           const hyperlink = SlideRelationsParser.resolveParagraphHyperlink(txtElement);
-           if(hyperlink) {
-              content.hyperlink = hyperlink;
-           }
+            const hyperlink = SlideRelationsParser.resolveParagraphHyperlink(txtElement);
+            if (hyperlink) {
+                content.hyperlink = hyperlink;
+            }
 
             return content;
         });
+
+        contents = this.restructureContents(contents);
 
         return {
             content: contents,
@@ -86,7 +104,9 @@ export default class ParagraphParser {
     }
 
     /**a:pPr */
-    public static determineParagraphProperties(paragraphProperties): Paragraph["paragraphProperties"] {
+    public static determineParagraphProperties(
+        paragraphProperties
+    ): Paragraph["paragraphProperties"] {
         if (!paragraphProperties) {
             return null;
         }
