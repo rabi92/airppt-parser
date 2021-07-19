@@ -21,7 +21,14 @@ export default class ParagraphParser {
                 contents[i + 1].hyperlink &&
                 contents[i].hyperlink.Uri === contents[i + 1].hyperlink.Uri
             ) {
-                contents[i].text += " " + contents[i + 1].text;
+                if (
+                    contents[i].text[0].trimEnd().length === contents[i].text[0].length &&
+                    contents[i + 1].text[0].trimStart().length === contents[i + 1].text[0].length
+                ) {
+                    contents[i].text[0] += " " + contents[i + 1].text[0];
+                } else {
+                    contents[i].text[0] += contents[i + 1].text[0];
+                }
                 contents.splice(i + 1, 1);
                 i--;
             }
