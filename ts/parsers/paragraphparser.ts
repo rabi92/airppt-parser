@@ -14,6 +14,7 @@ import {
  */
 export default class ParagraphParser {
     //Merge consecutive text content blocks together which have same hyperlinks
+    //and also adjust the spacing in between the hyperlink for the edge cases
     public static restructureContents(contents: Content[]): Content[] {
         for (let i = 0; i < contents.length - 1; i++) {
             if (

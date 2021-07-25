@@ -27,6 +27,7 @@ export default class SlideRelationsParser {
         if (!relID) {
             return null;
         }
+
         return this.getRelationDetails(relID);
     }
 
@@ -41,6 +42,7 @@ export default class SlideRelationsParser {
                 } else {
                     linkType = LinkType.Asset;
                 }
+
                 return {
                     Type: linkType,
                     Uri: relationDetails["Target"].replace("..", "ppt") //update any relative paths
