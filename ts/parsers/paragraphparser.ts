@@ -217,6 +217,7 @@ export default class ParagraphParser {
                     paragraph.list = this.restructureList(paragraph.list);
                     allParagraphs.push(cloneDeep(paragraph));
                     paragraph.list.listItems = [];
+                    currentLevel = -1;
                 }
                 //normal paragraph content
                 parsedParagraph && allParagraphs.push(parsedParagraph);
