@@ -119,7 +119,7 @@ export default class ParagraphParser {
             }
         }
 
-        if (list.listItems.length !== 1 && list.listItems[list.listItems.length - 1].list) {
+        if (list.listItems.length > 1 && list.listItems[list.listItems.length - 1].list) {
             this.restructureList(list.listItems[list.listItems.length - 1].list);
         }
 
