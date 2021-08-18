@@ -117,8 +117,8 @@ export default class SlideParser {
             groupedImages.push(...rootGroupNode["p:pic"]);
         }
         const subGroups = rootGroupNode["p:grpSp"];
-        if (subGroups && Array.isArray(subGroups) && isEmpty(subGroups) === false && groupCount <= GROUPS_LIMIT) {
-            subGroups.forEach(subGroup => {
+        if (subGroups && Array.isArray(subGroups) && groupCount <= GROUPS_LIMIT) {
+            subGroups.forEach((subGroup) => {
                 this.getGroupedNodes(subGroup, groupCount, groupedShapes, groupedImages);
             });
         }
@@ -140,13 +140,11 @@ export default class SlideParser {
         const graphicFrames = getAttributeByPath(slideData, ["p:spTree", "p:graphicFrame"], []);
 
         const groupedContent = getAttributeByPath(slideData, ["p:spTree", "p:grpSp"], []);
-        if (isEmpty(groupedContent) === false) {
-            groupedContent.forEach((group) => {
-                const { groupedShapes, groupedImages } = this.getGroupedNodes(group);
-                slideShapes.push(...groupedShapes);
-                slideImages.push(...groupedImages);
-            });
-        }
+        groupedContent.forEach((group) => {
+            const { groupedShapes, groupedImages } = this.getGroupedNodes(group);
+            slideShapes.push(...groupedShapes);
+            slideImages.push(...groupedImages);
+        });
 
         const slideTables = GraphicFrameParser.processGraphicFrameNodes(graphicFrames);
 
