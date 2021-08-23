@@ -9,6 +9,8 @@ const ELEMENTS_ROOT_NODE = {
     [SpecialityType.Paragraph]: "p:nvSpPr",
     [SpecialityType.Title]: "p:nvSpPr",
     [SpecialityType.Image]: "p:nvPicPr",
+    [SpecialityType.Audio]: "p:nvPicPr",
+    [SpecialityType.Video]: "p:nvPicPr",
     [SpecialityType.Table]: "p:nvGraphicFramePr"
 };
 
