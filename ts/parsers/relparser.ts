@@ -1,5 +1,5 @@
 import { getValueAtPath } from "../helpers";
-import { PowerpointElement, LinkType, Content } from "airppt-models-plus/pptelement";
+import { PowerpointElement, LinkType, Content, SpecialityType } from "airppt-models-plus/pptelement";
 
 /**
  * Parse everything that deals with relations such as hyperlinks and local images
@@ -14,12 +14,33 @@ export default class SlideRelationsParser {
         this.slideRels = rels;
     }
 
-    public static resolveShapeHyperlinks(element): PowerpointElement["links"] {
-        const relID = getValueAtPath(element, '["p:blipFill"][0]["a:blip"][0]["$"]["r:embed"]');
-        if (!relID) {
-            return null;
+    public static resolveShapeHyperlinks(element, specialityType): PowerpointElement["links"] {
+        let relID;
+        switch (specialityType) {
+            case SpecialityType.Audio:
+                relID = getValueAtPath(element, '["p:nvPicPr"][0]["p:nvPr"][0]["a:audioFile"][0]["$"]["r:link"]');
+                if (!relID) {
+                    return null;
+                }
+
+                return this.getRelationDetails(relID);
+
+            case SpecialityType.Video:
+                relID = getValueAtPath(element, '["p:nvPicPr"][0]["p:nvPr"][0]["a:videoFile"][0]["$"]["r:link"]');
+                if (!relID) {
+                    return null;
+                }
+
+                return this.getRelationDetails(relID);
+
+            default:
+                relID = getValueAtPath(element, '["p:blipFill"][0]["a:blip"][0]["$"]["r:embed"]');
+                if (!relID) {
+                    return null;
+                }
+
+                return this.getRelationDetails(relID);
         }
-        return this.getRelationDetails(relID);
     }
 
     public static resolveParagraphHyperlink(element): Content["hyperlink"] {
