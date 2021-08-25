@@ -19,25 +19,16 @@ export default class SlideRelationsParser {
         switch (specialityType) {
             case SpecialityType.Audio:
                 relID = getValueAtPath(element, '["p:nvPicPr"][0]["p:nvPr"][0]["a:audioFile"][0]["$"]["r:link"]');
-                if (!relID) {
-                    return null;
-                }
 
                 return this.getRelationDetails(relID);
 
             case SpecialityType.Video:
                 relID = getValueAtPath(element, '["p:nvPicPr"][0]["p:nvPr"][0]["a:videoFile"][0]["$"]["r:link"]');
-                if (!relID) {
-                    return null;
-                }
 
                 return this.getRelationDetails(relID);
 
             default:
                 relID = getValueAtPath(element, '["p:blipFill"][0]["a:blip"][0]["$"]["r:embed"]');
-                if (!relID) {
-                    return null;
-                }
 
                 return this.getRelationDetails(relID);
         }
@@ -53,6 +44,9 @@ export default class SlideRelationsParser {
     }
 
     public static getRelationDetails(relID): PowerpointElement["links"] {
+        if (!relID) {
+            return null;
+        }
         const relations = this.slideRels["Relationships"]["Relationship"];
         for (var relation of relations) {
             const relationDetails = relation["$"];
