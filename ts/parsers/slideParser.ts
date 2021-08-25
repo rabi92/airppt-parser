@@ -2,7 +2,6 @@ import * as format from "string-template";
 import { GROUPS_LIMIT, SCHEMAS_URI } from "../utils/constants";
 import { getAttributeByPath, ZipHandler } from "../helpers";
 import { GraphicFrameParser, PowerpointElementParser } from "./";
-import * as isEmpty from "lodash.isempty";
 
 export default class SlideParser {
     public static async getSlideLayout(slideRelations) {
