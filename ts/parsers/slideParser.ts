@@ -1,8 +1,6 @@
 import { join } from 'path';
 import * as format from "string-template";
 import { GROUPS_LIMIT, SCHEMAS_URI } from "../utils/constants";
-import { getAttributeByPath, ZipHandler } from "../helpers";
-import { SCHEMAS_URI } from "../utils/constants";
 import { getAttributeByPath, FileHandler } from "../helpers";
 import { GraphicFrameParser, PowerpointElementParser } from "./";
 
