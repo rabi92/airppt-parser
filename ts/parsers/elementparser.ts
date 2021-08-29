@@ -99,7 +99,7 @@ class PowerpointElementParser {
             const specialityType = ShapeParser.determineSpecialityType(this.element);
 
             //throwout unsupported content: for example charts, graphs etc
-            if(specialityType === SpecialityType.None) {
+            if (specialityType === SpecialityType.None) {
                 return null;
             }
 
@@ -146,7 +146,7 @@ class PowerpointElementParser {
             };
 
             //throwout paragraph elements which are empty e.g shapes with no text
-            if(specialityType === SpecialityType.Paragraph && isEmpty(pptElement.paragraph)) {
+            if (specialityType === SpecialityType.Paragraph && isEmpty(pptElement.paragraph)) {
                 return null;
             }
 
