@@ -17,19 +17,20 @@ export default class PptGlobalsParser {
         try {
             const slideShowGlobals = await FileHandler.parseContentFromFile(join(pptFilePath, "ppt/presentation.xml"));
 
-            const allSections = getAttributeByPath(slideShowGlobals, ["p:presentation", "p:extLst", "p:ext", "p14:sectionLst", "p14:section"], []);
-
+            let allSections: any[] = getAttributeByPath(slideShowGlobals, ["p:presentation", "p:extLst", "p:ext", "p14:sectionLst", "p14:section"], []);
+            allSections = allSections.filter(section => section?.["p14:sldIdLst"]?.[0]?.["p14:sldId"]?.length);
             let slidesCount = 0;
-            return allSections.map(section => {
-                const sectionSlidesLength = section["p14:sldIdLst"][0]["p14:sldId"].length;
-                const startingSlide = slidesCount;
-                slidesCount += sectionSlidesLength;
+            
+            return allSections.map((section) => {
+              const sectionSlidesLength = section["p14:sldIdLst"][0]["p14:sldId"].length;
+              const startingSlide = slidesCount;
+              slidesCount += sectionSlidesLength;
 
-                return {
-                    title: section["$"]["name"],
-                    startingSlide: startingSlide,
-                    lastSlide: slidesCount -1
-                }
+              return {
+                title: section["$"]["name"],
+                startingSlide: startingSlide,
+                lastSlide: slidesCount - 1,
+              };
             });
         } catch (error) {
             throw error;
