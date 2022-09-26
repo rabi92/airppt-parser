@@ -5,7 +5,7 @@ import { PowerpointElementParser, PptGlobalsParser, SlideParser } from "./parser
 export class AirParser {
   constructor(private readonly PowerpointFilePath: string) {}
 
-  public async ParsePowerPoint({ isScreenshotsOnly }: { isScreenshotsOnly?: boolean }): Promise<PowerpointDetails> {
+  public async ParsePowerPoint({ isScreenshotsOnly }: { isScreenshotsOnly: boolean }): Promise<PowerpointDetails> {
     return new Promise<PowerpointDetails>(async (resolve, reject) => {
       try {
         const slidesLength = await PptGlobalsParser.getSlidesLength(this.PowerpointFilePath);
