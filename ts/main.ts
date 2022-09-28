@@ -5,18 +5,16 @@ import { PowerpointElementParser, PptGlobalsParser, SlideParser } from "./parser
 export class AirParser {
   constructor(private readonly PowerpointFilePath: string) {}
 
-  public async ParsePowerPoint({ isScreenshotsOnly }: { isScreenshotsOnly: boolean }): Promise<PowerpointDetails> {
+  public async ParsePowerPoint(): Promise<PowerpointDetails> {
     return new Promise<PowerpointDetails>(async (resolve, reject) => {
       try {
         const slidesLength = await PptGlobalsParser.getSlidesLength(this.PowerpointFilePath);
         const slidesSections = await PptGlobalsParser.getSections(this.PowerpointFilePath);
         const allSlides = [];
 
-        if (!isScreenshotsOnly) {
-          const pptElementParser = new PowerpointElementParser();
-          for (let i = 1; i <= slidesLength; i++) {
-            allSlides.push(SlideParser.getSlideElements(pptElementParser, i, this.PowerpointFilePath));
-          }
+        const pptElementParser = new PowerpointElementParser();
+        for (let i = 1; i <= slidesLength; i++) {
+          allSlides.push(SlideParser.getSlideElements(pptElementParser, i, this.PowerpointFilePath));
         }
 
         Promise.allSettled(allSlides).then((result) => {
