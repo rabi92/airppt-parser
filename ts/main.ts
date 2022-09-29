@@ -9,7 +9,6 @@ export class AirParser {
     return new Promise<PowerpointDetails>(async (resolve, reject) => {
       try {
         const slidesLength = await PptGlobalsParser.getSlidesLength(this.PowerpointFilePath);
-        const slidesSections = await PptGlobalsParser.getSections(this.PowerpointFilePath);
         const allSlides = [];
 
         const pptElementParser = new PowerpointElementParser();
@@ -29,7 +28,6 @@ export class AirParser {
           resolve({
             powerPointElements: pptElements,
             inputPath: this.PowerpointFilePath,
-            sections: slidesSections,
             slidesLength,
           });
         });
