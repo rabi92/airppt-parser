@@ -14,7 +14,7 @@ export default class LineParser {
       return null;
     }
 
-    let lineElement: PowerpointElement["shape"]["border"] = {
+    let lineElement: Border = {
       color: this.getLineColor(shapeProperties),
       thickness: this.getLineWeight(shapeProperties),
       type: this.determineBorderType(shapeProperties),

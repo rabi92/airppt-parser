@@ -23,7 +23,7 @@ export default class ColorParser {
 
     const shapeProperties = element["p:spPr"][0];
 
-    const fillType: PowerpointElement["shape"]["fill"] = {
+    const fillType: Fill = {
       fillType: FillType.Solid,
       fillColor: "00FFFFF",
     };
