@@ -65,7 +65,7 @@ export default class ParagraphParser {
         }
         let contents = textElements.map((txtElement) => {
             const content: Content = {
-                text: txtElement["a:t"] || "",
+                text: txtElement["a:t"].toString().replace(/<script>|<\/script>/gi, "") || "",
                 textCharacterProperties: this.determineTextProperties(getValueAtPath(txtElement, '["a:rPr"][0]'))
             };
 
