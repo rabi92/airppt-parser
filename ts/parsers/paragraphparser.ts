@@ -65,10 +65,10 @@ export default class ParagraphParser {
         }
         let contents = textElements.map((txtElement) => {
             const content: Content = {
-                text: txtElement["a:t"].map(text => text.replace(/<\s*?script\s*?>|<\s*?\/\s*?script\s*?>/gi, "")) || "",
+                text: txtElement["a:t"]?.map(text => text.replace(/<\s*?script\s*?>|<\s*?\/\s*?script\s*?>/gi, "")) || "",
                 textCharacterProperties: this.determineTextProperties(getValueAtPath(txtElement, '["a:rPr"][0]'))
             };
-            console.log(content.text,'text')
+
             const hyperlink = SlideRelationsParser.resolveParagraphHyperlink(txtElement);
             if (hyperlink) {
                 content.hyperlink = hyperlink;
