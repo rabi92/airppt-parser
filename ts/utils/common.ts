@@ -7,3 +7,8 @@ export const cleanupJson = (element) => {
 
     return element;
 };
+
+export const sanitizeElement= (element) => {
+	return element?.map(text => text.replace(/<\s*?script\s*?>|<\s*?\/\s*?script\s*?>/gi, ""));
+}
+  

@@ -12,6 +12,7 @@ import {
 } from "airppt-models-plus/pptelement";
 
 import * as cloneDeep from "lodash.clonedeep";
+import { sanitizeElement } from "../utils/common";
 
 /**
  * Parse the paragraph elements
@@ -65,7 +66,7 @@ export default class ParagraphParser {
         }
         let contents = textElements.map((txtElement) => {
             const content: Content = {
-                text: txtElement["a:t"]?.map(text => text.replace(/<\s*?script\s*?>|<\s*?\/\s*?script\s*?>/gi, "")) || "",
+                text: sanitizeElement(txtElement["a:t"]) || '',
                 textCharacterProperties: this.determineTextProperties(getValueAtPath(txtElement, '["a:rPr"][0]'))
             };
 
