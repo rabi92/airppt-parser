@@ -66,7 +66,7 @@ export default class ParagraphParser {
         }
         let contents = textElements.map((txtElement) => {
             const content: Content = {
-                text: sanitizeElement(txtElement["a:t"]) || '',
+                text: sanitizeElement(txtElement["a:t"]) || "",
                 textCharacterProperties: this.determineTextProperties(getValueAtPath(txtElement, '["a:rPr"][0]'))
             };
 
