@@ -79,7 +79,7 @@ export default class ParagraphParser {
         });
 
         contents = this.restructureContents(contents);
-        sanitizeContent(contents)
+        sanitizeContent(contents);
 
         return {
             content: contents,
