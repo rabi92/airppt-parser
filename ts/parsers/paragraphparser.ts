@@ -12,6 +12,7 @@ import {
 } from "airppt-models-plus/pptelement";
 
 import * as cloneDeep from "lodash.clonedeep";
+import { sanitizeContent } from "../utils/common";
 
 /**
  * Parse the paragraph elements
@@ -78,6 +79,7 @@ export default class ParagraphParser {
         });
 
         contents = this.restructureContents(contents);
+        sanitizeContent(contents);
 
         return {
             content: contents,
